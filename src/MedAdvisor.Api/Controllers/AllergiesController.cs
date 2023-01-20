@@ -1,13 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using MedAdvisor.Api.Dtos;
+﻿
 using MedAdvisor.DataAccess.MySql.DataContext;
-using MedAdvisor.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using MedAdvisor.DataAccess.MySql.Repositories;
+using MedAdvisor.Services.Okta.Interfaces;
 using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
+using MedAdvisor.Models;
+
 
 namespace MedAdvisor.Api.Controllers
 {
@@ -15,12 +13,26 @@ namespace MedAdvisor.Api.Controllers
     [ApiController]
     public class AllergiesController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly IAllergyRepository _AllrgiesRepository;
+        private readonly IAllergyService _AllergyService;
+        private readonly IUserServices _userService;
+        private readonly IAuthService _AuthService;
         private readonly AppDbContext _db;
-        public AllergiesController(IConfiguration config, AppDbContext db)
+        
+        public AllergiesController(
+            IAllergyRepository allergyRepository,
+            IAllergyService allergyService,
+            IUserServices userService,
+            IAuthService authService,
+            AppDbContext dbContext
+            )
         {
-            _configuration = config;
-            _db = db;
+            _AllrgiesRepository = allergyRepository;
+            _AllergyService = allergyService;
+            _userService = userService;
+            _AuthService = authService;
+            _db = dbContext;
+
         }
 
 
@@ -28,41 +40,18 @@ namespace MedAdvisor.Api.Controllers
         [Route("add/{id}")]
         public async Task<IActionResult> AddAllergy([FromRoute] Guid id)
         {
-         Request.Headers.TryGetValue("Authorization", out StringValues token);
+            Request.Headers.TryGetValue("Authorization", out StringValues token);
             if (String.IsNullOrEmpty(token))
             {
                 return BadRequest("un authorized user");
             }
 
-            var Id =  GetId(token);
-            var User_id = new Guid(Id);
+            var User_Id = _AuthService.GetId(token);
+            var allergy = await _AllergyService.Get(id);
+            var user = await _userService.GetUserById(User_Id);
 
-            //var Employee = await _db.Users.Include(m => m.Profile)
-            //    .ThenInclude(m=>m.Allergies)
-            //    .ThenInclude(u=>u.Allergy)
-            //    .FirstOrDefaultAsync(m => m.UserId == userId);
-            //return Ok(Employee);
-
-            //var alergy = new Allergy
-            //{
-            //    Name = "the man",
-            //    Code = "12345",
-            //};
-            //await _db.Allergies.AddAsync(alergy);
-            //await _db.SaveChangesAsync();
-            //return Ok(alergy);
-            //var allergy = await _db.Allergies.FindAsync(request.AllergyId);
-
-            var allergy = await _db.Allergies.Include(a => a.Users)
-            .FirstOrDefaultAsync(a => a.Id == id);
-
-            var user = await _db.Users.Include(u => u.Allergies)
-                .FirstOrDefaultAsync(u => u.Id == User_id);
-
-            user?.Allergies?.Add(allergy); 
-            allergy?.Users?.Add(user);       
-            await _db.SaveChangesAsync();
-            return Ok(user);
+            var saved_user = await _AllrgiesRepository.AddAllergyAsync(user, allergy);
+             return Ok(user);
 
         }
 
@@ -77,63 +66,36 @@ namespace MedAdvisor.Api.Controllers
                 return BadRequest("un authorized user");
             }
 
-            var Id = GetId(token);
-            var User_id = new Guid(Id);
+            var User_Id = _AuthService.GetId(token);
+            var allergy = await _AllergyService.Get(id);
+            var user = await _userService.GetUserById(User_Id);
 
-            var allergy = await _db.Allergies.Include(a => a.Users)
-             .FirstOrDefaultAsync(a => a.Id == id);
-
-            var user = await _db.Users.Include(u => u.Allergies)
-                .FirstOrDefaultAsync(u => u.Id == User_id);
-
-            user.Allergies.Remove(allergy);
-            await _db.SaveChangesAsync();
-
-            //var user = await _db.Users.Include(m => m.Profile).ThenInclude(u => u.Allergies)
-            // .AsNoTracking().FirstOrDefaultAsync(m => m.UserId == request.UserId);
-            return Ok(user);
-
-
-            //var allergy = new allergy()
-            //{
-            //    allergyid = guid.newguid(),
-            //    name = newallergy.name,
-            //    code = newallergy.code,
-            //};
-            //await _db..addasync(contact);
-            //await _db.savechangesasync();
-
-            //return Ok();
+            var updated_user = await _AllrgiesRepository.DeleteAllergyAsync(user, allergy);
+            return Ok(updated_user);
+           
         }
 
         [HttpGet]
         [Route("search")]
-
-        public async Task<IActionResult> search(string name)
+        public async Task<IEnumerable<Allergy>> search(string name)
         {
-
-            var  allergies =   await _db.Allergies.Where(a => a.Name.Contains(name)).ToListAsync();
-            return Ok( allergies);
+            var allergies_list = await _AllrgiesRepository.SearchAllergyies(name);
+            return allergies_list;
+            
         }
-
-        private string GetId(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Secret").Value);
-
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
-
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var id = jwtToken.Claims.First(x => x.Type == "Id").Value;
-            return id;
-        }
-
     }
 }
+
+
+
+//var user = await _db.Users.Include(m => m.Profile).ThenInclude(u => u.Allergies)
+// .AsNoTracking().FirstOrDefaultAsync(m => m.UserId == request.UserId);
+
+
+//var Employee = await _db.Users.Include(m => m.Profile)
+//    .ThenInclude(m=>m.Allergies)
+//    .ThenInclude(u=>u.Allergy)
+//    .FirstOrDefaultAsync(m => m.UserId == userId);
+//return Ok(Employee);
+
+

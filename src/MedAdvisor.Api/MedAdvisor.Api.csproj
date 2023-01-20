@@ -4,9 +4,11 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>7865320f-2d80-4d8c-80fc-e28cb63c3739</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Auth" Version="1.58.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
@@ -22,7 +24,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedAdvisor.DataAccess.MySql\MedAdvisor.DataAccess.MySql.csproj" />
+    <ProjectReference Include="..\MedAdvisor.Infrastructrure\MedAdvisor.Infrastructrure.csproj" />
     <ProjectReference Include="..\MedAdvisor.Models\MedAdvisor.Models.csproj" />
+    <ProjectReference Include="..\MedAdvisor.Services.Okta\MedAdvisor.Services.Okta.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="Resources\Files\" />
   </ItemGroup>
 
 </Project>

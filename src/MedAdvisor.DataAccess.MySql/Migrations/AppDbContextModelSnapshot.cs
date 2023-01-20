@@ -24,12 +24,12 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<Guid>("AllergiesId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UsersId")
+                    b.Property<Guid>("UsersUserId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("AllergiesId", "UsersId");
+                    b.HasKey("AllergiesId", "UsersUserId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UsersUserId");
 
                     b.ToTable("AllergyUser", (string)null);
                 });
@@ -39,12 +39,12 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<Guid>("DiagnosesId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UsersId")
+                    b.Property<Guid>("UsersUserId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("DiagnosesId", "UsersId");
+                    b.HasKey("DiagnosesId", "UsersUserId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UsersUserId");
 
                     b.ToTable("DiagnosesUser", (string)null);
                 });
@@ -80,7 +80,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
                     b.HasKey("DiagnosesId");
 
-                    b.ToTable("Diagnoses");
+                    b.ToTable("Diagnosess");
                 });
 
             modelBuilder.Entity("MedAdvisor.Models.Document", b =>
@@ -100,6 +100,9 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("filePath")
+                        .HasColumnType("longtext");
 
                     b.HasKey("DocumentId");
 
@@ -127,7 +130,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
             modelBuilder.Entity("MedAdvisor.Models.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
@@ -145,7 +148,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("longblob");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Users");
                 });
@@ -233,7 +236,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
                     b.HasKey("VaccineId");
 
-                    b.ToTable("Vaccine");
+                    b.ToTable("Vaccines");
                 });
 
             modelBuilder.Entity("MedicineUser", b =>
@@ -241,25 +244,25 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<Guid>("MedicinesMedicineId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UsersId")
+                    b.Property<Guid>("UsersUserId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("MedicinesMedicineId", "UsersId");
+                    b.HasKey("MedicinesMedicineId", "UsersUserId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("UsersUserId");
 
                     b.ToTable("MedicineUser", (string)null);
                 });
 
             modelBuilder.Entity("UserVaccine", b =>
                 {
-                    b.Property<Guid>("UsersId")
+                    b.Property<Guid>("UsersUserId")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("VaccinesVaccineId")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("UsersId", "VaccinesVaccineId");
+                    b.HasKey("UsersUserId", "VaccinesVaccineId");
 
                     b.HasIndex("VaccinesVaccineId");
 
@@ -276,7 +279,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
                     b.HasOne("MedAdvisor.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -291,7 +294,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
                     b.HasOne("MedAdvisor.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -328,7 +331,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
 
                     b.HasOne("MedAdvisor.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -337,7 +340,7 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                 {
                     b.HasOne("MedAdvisor.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

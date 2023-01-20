@@ -1,11 +1,20 @@
 
-
 using System.Text;
 using System.Text.Json.Serialization;
+using AutoMapper;
+using MedAdvisor.DataAccess.MySql;
 using MedAdvisor.DataAccess.MySql.DataContext;
+using MedAdvisor.DataAccess.MySql.Repositories;
+using MedAdvisor.DataAccess.MySql.Repositories.Allergies;
+using MedAdvisor.DataAccess.MySql.Repositories.Users;
+using MedAdvisor.Infrastructrure.Interfaces;
+using MedAdvisor.Infrastructrure.Repositories;
+using MedAdvisor.Services.Okta.Interfaces;
+using MedAdvisor.Services.Okta.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -13,6 +22,30 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
+builder.Services.AddScoped<IAllergyService, AllergyService>();
+builder.Services.AddScoped<IAllergyRepository, AllergyRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserServices, UserService>();
+builder.Services.AddScoped<IMedicineService, MedicineService>();
+builder.Services.AddScoped<ImedicineRepository, MedicineRepository>();
+builder.Services.AddScoped<IVaccineService, VaccineService>();
+builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
+builder.Services.AddScoped<IDiagnosesService, DiagnosesService>();
+builder.Services.AddScoped<IDiagnosesRepository,DiagnosesRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+
+// Auto Mapper Configurations  
+var mappingConfig = new MapperConfiguration(mc => {
+    mc.AddProfile(new Mapping());
+    mc.AllowNullCollections = true;
+    mc.AllowNullDestinationValues = true;
+});
+
+IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mapper); 
+
 
 // add db contect 
 builder.Services.AddDbContext<AppDbContext>(
@@ -21,12 +54,14 @@ builder.Services.AddDbContext<AppDbContext>(
 
 //
 builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("google"));
 // For Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
 
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
@@ -35,6 +70,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
+
 
 // Adding Jwt Bearer
 .AddJwtBearer(options =>
@@ -50,6 +86,13 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
     };
 });
+
+builder.Services.AddCors(c =>
+{
+    c.AddPolicy("AllowOrigin", options => options
+    .AllowAnyOrigin());
+});
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -82,6 +125,18 @@ builder.Services.AddSwaggerGen(c => {
 });
 
 var app = builder.Build();
+
+app.UseStaticFiles();
+app.UseCors(options => options.AllowAnyOrigin());
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path
+    .Combine(builder.Environment.ContentRootPath, @"Resources")),
+    RequestPath = new PathString("/Resources")
+});
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

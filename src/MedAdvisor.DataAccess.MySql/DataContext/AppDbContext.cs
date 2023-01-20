@@ -38,19 +38,20 @@ namespace MedAdvisor.DataAccess.MySql.DataContext
             modelBuilder.Entity<User>().HasMany(x => x.Vaccines)
                 .WithMany(x => x.Users).
                 UsingEntity(j => j.ToTable("VaccineUser"));
-      
+
 
             // user -> document 
             modelBuilder.Entity<Document>()
                 .HasOne(d => d.User)
                 .WithMany(u => u.Documents)
                 .HasForeignKey(d => d.UserId);
+
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Allergy> Allergies { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<Diagnoses> Diagnosess { get; set; }
-        public DbSet<Diagnoses> Vaccines { get; set; }
+        public DbSet<Vaccine> Vaccines { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
 
