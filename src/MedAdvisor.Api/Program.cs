@@ -35,6 +35,8 @@ builder.Services.AddScoped<IDiagnosesService, DiagnosesService>();
 builder.Services.AddScoped<IDiagnosesRepository,DiagnosesRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 // Auto Mapper Configurations  
 var mappingConfig = new MapperConfiguration(mc => {
