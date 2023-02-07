@@ -2,9 +2,8 @@
 using MedAdvisor.Services.Okta.Interfaces;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Mvc;
-using MedAdvisor.Api.Models;
-using MedAdvisor.Models;
 using MedAdvisor.Api.Dtos;
+using MedAdvisor.Models;
 
 using AutoMapper;
 

@@ -38,6 +38,11 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
+
+// adding data seeder initializer
+builder.Services.AddTransient<DataSeeder>();
+
+
 // Auto Mapper Configurations  
 var mappingConfig = new MapperConfiguration(mc => {
     mc.AddProfile(new Mapping());
@@ -46,8 +51,20 @@ var mappingConfig = new MapperConfiguration(mc => {
 });
 
 IMapper mapper = mappingConfig.CreateMapper();
-builder.Services.AddSingleton(mapper); 
+builder.Services.AddSingleton(mapper);
 
+
+builder.Services.AddCors(options =>
+{
+
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 // add db contect 
 builder.Services.AddDbContext<AppDbContext>(
@@ -89,11 +106,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddCors(c =>
-{
-    c.AddPolicy("AllowOrigin", options => options
-    .AllowAnyOrigin());
-});
+
 
 
 builder.Services.AddControllers();
@@ -128,15 +141,31 @@ builder.Services.AddSwaggerGen(c => {
 
 var app = builder.Build();
 
+
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
+    SeedData(app);
+
+//Seed Data
+void SeedData(IHost app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<DataSeeder>();
+        service.Seed();
+    }
+}
+
+app.UseCors();
+
 app.UseStaticFiles();
-app.UseCors(options => options.AllowAnyOrigin());
+//app.UseCors(options => options.AllowAnyOrigin());
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path
     .Combine(builder.Environment.ContentRootPath, @"Resources")),
     RequestPath = new PathString("/Resources")
 });
-
 
 
 
@@ -168,75 +197,3 @@ app.Run();
 
 
 
-
-
-//using System.Text;
-//using MedAdvisor.DataAccess.MySql.Auth;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.IdentityModel.Tokens;
-
-//var builder = WebApplication.CreateBuilder(args);
-
-//// Add services to the container.
-//builder.Services.AddControllers();
-
-//// add db contect 
-//builder.Services.AddDbContext<AppDbContext>(
-//    options => options.UseMySql(builder.Configuration.GetConnectionString("dbConnection"),
-//    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("dbConnection"))));
-
-
-//// Adding Authentication
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-
-// // Adding Jwt Bearer  it validates the token in authorization bearer
-// .AddJwtBearer(options =>
-// {
-//     options.SaveToken = true;
-//     options.RequireHttpsMetadata = false;
-//     options.TokenValidationParameters = new TokenValidationParameters()
-//     {
-//         ValidateIssuer = false, // for dev
-//         ValidateAudience = false,  // for dev
-//         ValidAudience = builder.Configuration["JWT:ValidAudience"],
-//         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
-//         RequireExpirationTime = false, // for dev
-//         ValidateLifetime = true
-
-//     };
-// });
-
-
-//// For Identity
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-//    .AddEntityFrameworkStores<AppDbContext>()
-//    .AddDefaultTokenProviders();
-
-
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-
-//var app = builder.Build();
-
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
-
-//app.UseHttpsRedirection();
-//app.UseAuthentication();
-//app.UseAuthorization();
-
-//app.MapControllers();
-
-//app.Run();

@@ -45,7 +45,6 @@ namespace MedAdvisor.Api.Controllers
             {
                 return BadRequest("un authorized user");
             }
-
             var User_Id = _AuthService.GetId(token);
             var allergy = await _AllergyService.Get(id);
             var user = await _userService.GetUserById(User_Id);
@@ -83,6 +82,8 @@ namespace MedAdvisor.Api.Controllers
             return allergies_list;
             
         }
+
+       
     }
 }
 

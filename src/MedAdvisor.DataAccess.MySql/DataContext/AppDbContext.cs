@@ -12,6 +12,7 @@ namespace MedAdvisor.DataAccess.MySql.DataContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             // user -> profile 
             modelBuilder.Entity<User>()
             .HasOne(u => u.Profile)
@@ -22,6 +23,7 @@ namespace MedAdvisor.DataAccess.MySql.DataContext
             modelBuilder.Entity<User>().HasMany(x => x.Allergies)
                 .WithMany(x => x.Users).
                 UsingEntity(j => j.ToTable("AllergyUser"));
+                
 
             // user -> medicine
             modelBuilder.Entity<User>().HasMany(x => x.Medicines)
@@ -46,6 +48,7 @@ namespace MedAdvisor.DataAccess.MySql.DataContext
                 .WithMany(u => u.Documents)
                 .HasForeignKey(d => d.UserId);
 
+            //new AllergyInitializer(modelBuilder).Seed();
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Allergy> Allergies { get; set; }
