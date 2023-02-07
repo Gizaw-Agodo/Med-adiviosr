@@ -89,14 +89,4 @@ namespace MedAdvisor.Api.Controllers
 
 
 
-//var user = await _db.Users.Include(m => m.Profile).ThenInclude(u => u.Allergies)
-// .AsNoTracking().FirstOrDefaultAsync(m => m.UserId == request.UserId);
-
-
-//var Employee = await _db.Users.Include(m => m.Profile)
-//    .ThenInclude(m=>m.Allergies)
-//    .ThenInclude(u=>u.Allergy)
-//    .FirstOrDefaultAsync(m => m.UserId == userId);
-//return Ok(Employee);
-
 
