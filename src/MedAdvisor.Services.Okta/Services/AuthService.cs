@@ -7,20 +7,25 @@ using Google.Apis.Auth;
 using MedAdvisor.Models;
 using System.Security.Claims;
 using MedAdvisor.Services.Okta.Interfaces;
+using MedAdvisor.Commons.Email;
+using System.Net.Mail;
 
 namespace MedAdvisor.Services.Okta.Services
 {
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
+        private readonly MailSettings _mailSettings;
         private readonly GoogleAuthSettings _googleAuthSettings;
 
         public AuthService(
-            IConfiguration config,
-            IOptionsSnapshot<GoogleAuthSettings> googleAuthSettings
+            IOptionsSnapshot<GoogleAuthSettings> googleAuthSettings,
+            IOptions<MailSettings> mailSettings,
+            IConfiguration config
             )
         {
             _googleAuthSettings = googleAuthSettings.Value;
+            _mailSettings = mailSettings.Value;
             _configuration = config;
 
         }
@@ -67,6 +72,35 @@ namespace MedAdvisor.Services.Okta.Services
             var user_id = new Guid(id);
 
             return user_id;
+        }
+
+        public bool SendEmail(string email, string subject)
+        {
+            var From = _mailSettings.From;
+            var Password = _mailSettings.Password;
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(From);
+            mailMessage.To.Add(new MailAddress("gizawag123@gmail.com"));
+            mailMessage.Subject = subject;
+            mailMessage.IsBodyHtml = true;
+            mailMessage.Body = "reset your passowrd";
+            SmtpClient client = new SmtpClient();
+            client.UseDefaultCredentials = false;
+            client.Credentials = new System.Net.NetworkCredential(From, Password);
+            client.Host = _mailSettings.Host;
+            client.EnableSsl = true;
+            client.Port = _mailSettings.Port;
+
+            try
+            {
+                client.Send(mailMessage);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return true;
         }
 
         public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(string token)

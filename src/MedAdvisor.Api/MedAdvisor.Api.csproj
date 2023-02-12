@@ -16,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MimeKit" Version="3.5.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
     <PackageReference Include="Superpower" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
@@ -23,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MedAdvisor.Commons\MedAdvisor.Commons.csproj" />
     <ProjectReference Include="..\MedAdvisor.DataAccess.MySql\MedAdvisor.DataAccess.MySql.csproj" />
     <ProjectReference Include="..\MedAdvisor.Infrastructrure\MedAdvisor.Infrastructrure.csproj" />
     <ProjectReference Include="..\MedAdvisor.Models\MedAdvisor.Models.csproj" />

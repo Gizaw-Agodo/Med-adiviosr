@@ -88,7 +88,7 @@ namespace MedAdvisor.Api.Controllers
         }
 
         [HttpPut]
-        [Route("Update{id}")]
+        [Route("Update/{id}")]
         public async Task<IActionResult> UpdateDocument([FromForm] UpdateDocumentDto document, Guid id )
         {
             var fetched_document = await _documentRepository.GetDocumentById(id);

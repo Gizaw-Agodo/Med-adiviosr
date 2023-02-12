@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json.Serialization;
 using AutoMapper;
+using MedAdvisor.Commons.Email;
 using MedAdvisor.DataAccess.MySql;
 using MedAdvisor.DataAccess.MySql.DataContext;
 using MedAdvisor.DataAccess.MySql.Repositories;
@@ -14,6 +15,7 @@ using MedAdvisor.Services.Okta.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -38,7 +40,7 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
-
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 // adding data seeder initializer
 builder.Services.AddTransient<DataSeeder>();
 

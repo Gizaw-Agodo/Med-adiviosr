@@ -7,6 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using MedAdvisor.Api.Dtos;
 using MedAdvisor.Models;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using rentX.Common.Email;
+using Microsoft.Extensions.Configuration;
+using System.Net.Mail;
+using MimeKit;
+using MedAdvisor.Commons.Email;
+using Microsoft.Extensions.Options;
+using AutoMapper.Internal;
 
 namespace MedAdvisor.Api.Controllers;
 
@@ -29,6 +37,8 @@ public class AuthController : ControllerBase
         _authService = authService;
         _userService = userService;
     }
+
+   
 
     [HttpPost]
     [Route("register")]
@@ -117,7 +127,23 @@ public class AuthController : ControllerBase
 
     }
 
-  
+
+
+    [HttpPost("password/forgot")]
+    public  async Task<IActionResult> ForgotPassword(string email)
+    {
+        var user = await _userService.GetUserByEmail(email);
+
+        if (user == null)
+        {
+          return NotFound("User not found");
+        }
+        var response = _authService.SendEmail(email, "e");
+        return Ok(response);
+       
+    }
+
+
 
 }
 
@@ -194,7 +220,7 @@ public class AuthController : ControllerBase
 //                    var token = GenerateIdentityToken(new_user);
 //                    return Ok(token);
 //                }
-//                return BadRequest("server error gax");
+//                return BadRequest("server error");
 
 //            }
 //            return BadRequest();

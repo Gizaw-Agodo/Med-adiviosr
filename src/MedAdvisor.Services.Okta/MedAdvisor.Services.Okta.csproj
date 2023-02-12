@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MedAdvisor.Commons\MedAdvisor.Commons.csproj" />
     <ProjectReference Include="..\MedAdvisor.DataAccess.MySql\MedAdvisor.DataAccess.MySql.csproj" />
     <ProjectReference Include="..\MedAdvisor.Infrastructrure\MedAdvisor.Infrastructrure.csproj" />
     <ProjectReference Include="..\MedAdvisor.Models\MedAdvisor.Models.csproj" />
