@@ -142,6 +142,8 @@ builder.Services.AddSwaggerGen(c => {
     });
 });
 
+
+
 var app = builder.Build();
 
 
@@ -187,8 +189,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
 
+
+
+public partial class Program { };
 
 
 

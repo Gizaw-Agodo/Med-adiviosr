@@ -35,5 +35,9 @@
     <Folder Include="Resources\" />
     <Folder Include="Resources\Files\" />
   </ItemGroup>
+	
+	<ItemGroup>
+		<InternalsVisibleTo Include="MedAdvisor.IntegrationTests" />
+	</ItemGroup>
 
 </Project>

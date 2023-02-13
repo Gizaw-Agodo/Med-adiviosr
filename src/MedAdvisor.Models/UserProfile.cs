@@ -1,13 +1,17 @@
 ﻿
+
 namespace MedAdvisor.Models
 {
     public class UserProfile
     {
         public Guid Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public enum GenderTypes { Male, Female };
         public GenderTypes Gender { get; set; }
         public int CPRNumber { get; set; }
+        public int TlfNumber { get; set; }
         public string? Nationality { get; set; }
         public String TelephoneNumber { get; set; } = string.Empty;
         public bool OrganDonor { get; set; }
@@ -21,7 +25,8 @@ namespace MedAdvisor.Models
         public string? EmergencyPhone { get; set; }
         public string? EmergencyContactName { get; set; }
         public string? EmergencyContactPhoneNo { get; set; }
-        public string? Relationship { get; set; }       
+        public string? Relationship { get; set; }
+        public string? Other { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
     }
