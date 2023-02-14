@@ -21,9 +21,9 @@ namespace MedAdvisor.Services.Okta.Services
                 var newprofile = await _profileRepository.AddProfileAsync(profile,user);
                 return newprofile;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -34,9 +34,9 @@ namespace MedAdvisor.Services.Okta.Services
                 var profile = await _profileRepository.GetProfile(id);
                 return profile;
             }
-            catch (Exception ex )
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -47,9 +47,9 @@ namespace MedAdvisor.Services.Okta.Services
                 var updated = await _profileRepository.UdpdateProfile(profile);
                 return updated;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }

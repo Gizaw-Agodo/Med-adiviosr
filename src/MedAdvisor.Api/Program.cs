@@ -5,6 +5,7 @@ using AutoMapper;
 using MedAdvisor.Commons.Email;
 using MedAdvisor.DataAccess.MySql;
 using MedAdvisor.DataAccess.MySql.DataContext;
+using MedAdvisor.DataAccess.MySql.Initializer;
 using MedAdvisor.DataAccess.MySql.Repositories;
 using MedAdvisor.DataAccess.MySql.Repositories.Allergies;
 using MedAdvisor.DataAccess.MySql.Repositories.Users;
@@ -40,10 +41,10 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
+System.Net.ServicePointManager.Expect100Continue = false;
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 // adding data seeder initializer
 builder.Services.AddTransient<DataSeeder>();
-
 
 // Auto Mapper Configurations  
 var mappingConfig = new MapperConfiguration(mc => {
@@ -141,6 +142,8 @@ builder.Services.AddSwaggerGen(c => {
     });
 });
 
+
+
 var app = builder.Build();
 
 
@@ -186,8 +189,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
 
+
+
+public partial class Program { };
 
 
 

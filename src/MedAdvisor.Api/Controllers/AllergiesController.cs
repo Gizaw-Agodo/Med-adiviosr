@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MedAdvisor.Models;
 
 
+
 namespace MedAdvisor.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -34,6 +35,7 @@ namespace MedAdvisor.Api.Controllers
             _db = dbContext;
 
         }
+
 
 
         [HttpPost]
@@ -83,7 +85,12 @@ namespace MedAdvisor.Api.Controllers
             
         }
 
-       
+
+
+
+
+
+
     }
 }
 

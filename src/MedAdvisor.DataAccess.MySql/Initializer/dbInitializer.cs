@@ -1,27 +1,29 @@
 ﻿using MedAdvisor.DataAccess.MySql.DataContext;
 using MedAdvisor.Models;
 
-public class DataSeeder
+namespace MedAdvisor.DataAccess.MySql.Initializer
 {
-	public AppDbContext DbContext;
-	public DataSeeder(AppDbContext dbContext)
-	{
-		this.DbContext = dbContext;
-	}
+    public class DataSeeder
+    {
+        public AppDbContext DbContext;
+        public DataSeeder(AppDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
 
-	public void Seed()
-	{
+        public void Seed()
+        {
 
-		if (!DbContext.Allergies.Any())
-		{
-			// allergy seed list 
-			var allergies = new List<Allergy>()
-			{
-				new Allergy()
-				{
-					Name = "milk",
-					Code = "al001"
-				},
+            if (!DbContext.Allergies.Any())
+            {
+                // allergy seed list 
+                var allergies = new List<Allergy>()
+            {
+                new Allergy()
+                {
+                    Name = "milk",
+                    Code = "al001"
+                },
                 new Allergy()
                 {
                     Name = "egg",
@@ -43,16 +45,17 @@ public class DataSeeder
                     Code = "al005"
                 }
             };
-           
-            DbContext.Allergies.AddRange(allergies);
-            DbContext.SaveChanges();
 
-        }
+                DbContext.Allergies.AddRange(allergies);
+                DbContext.SaveChanges();
+
+            }
 
 
-        // vaccine seed list
-        if (!DbContext.Vaccines.Any()){
-            var vaccines = new List<Vaccine>()
+            // vaccine seed list
+            if (!DbContext.Vaccines.Any())
+            {
+                var vaccines = new List<Vaccine>()
             {
                 new Vaccine()
                 {
@@ -81,16 +84,16 @@ public class DataSeeder
                 }
 
             };
-            DbContext.Vaccines.AddRange(vaccines);
-            DbContext.SaveChanges();
+                DbContext.Vaccines.AddRange(vaccines);
+                DbContext.SaveChanges();
 
-        }
+            }
 
 
-        // medicine seed data 
-        if (!DbContext.Medicines.Any())
-        {
-            var medicines = new List<Medicine>()
+            // medicine seed data 
+            if (!DbContext.Medicines.Any())
+            {
+                var medicines = new List<Medicine>()
             {
                 new Medicine()
                 {
@@ -119,16 +122,16 @@ public class DataSeeder
                 }
             };
 
-            DbContext.Medicines.AddRange(medicines);
-            DbContext.SaveChanges();
+                DbContext.Medicines.AddRange(medicines);
+                DbContext.SaveChanges();
 
-        }
+            }
 
 
-        // diagnosis seed data 
-        if (!DbContext.Diagnosess.Any())
-        {
-            var diagnoseses = new List<Diagnoses>()
+            // diagnosis seed data 
+            if (!DbContext.Diagnosess.Any())
+            {
+                var diagnoseses = new List<Diagnoses>()
             {
                 new Diagnoses()
                 {
@@ -157,11 +160,12 @@ public class DataSeeder
                 }
 
             };
-            DbContext.Diagnosess.AddRange(diagnoseses);
-            DbContext.SaveChanges();
+                DbContext.Diagnosess.AddRange(diagnoseses);
+                DbContext.SaveChanges();
+
+            }
+
 
         }
-
-
     }
 }

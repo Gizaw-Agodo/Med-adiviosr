@@ -40,7 +40,7 @@ namespace rentX.Common.Email
             }
             catch (Exception ex)
             {
-                var a = "test";
+                throw ex;
             }
             return false;
         }

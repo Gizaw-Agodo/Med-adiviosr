@@ -49,6 +49,32 @@ namespace MedAdvisor.Api.Controllers
 
         }
 
+        [HttpGet]
+        [Route("userData")]
+        public async Task<IActionResult> GetUserAllergies()
+        {
+
+            Request.Headers.TryGetValue("Authorization", out StringValues token);
+            if (String.IsNullOrEmpty(token))
+            {
+                return BadRequest("un authorized user");
+            }
+
+            var User_Id = _AuthService.GetId(token);
+            var user = await _userService.GetUserById(User_Id);
+            if (ModelState.IsValid)
+            {
+                var userData = await _userService.FetchUserData(user.Email);
+                if (userData != null)
+                {
+                    return Ok(userData);
+                }
+                return BadRequest("user does not exist!");
+            }
+            return BadRequest();
+
+        }
+
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> UpdateProfile([FromBody] AddProfileDto data)

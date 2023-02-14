@@ -32,6 +32,7 @@ namespace MedAdvisor.DataAccess.MySql.Repositories.Users
             return user;
         }
 
+
         public async Task<User> GetUserByEmail(string email)
         {
             var user = await _db.Users.FirstOrDefaultAsync(

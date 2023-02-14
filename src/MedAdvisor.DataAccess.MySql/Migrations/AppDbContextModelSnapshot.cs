@@ -180,6 +180,10 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<string>("EmergencyPhone")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -190,11 +194,18 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<string>("InsuranceType")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Nationality")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("OrganDonor")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Other")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PolicyNumber")
                         .HasColumnType("longtext");
@@ -208,6 +219,9 @@ namespace MedAdvisor.DataAccess.MySql.Migrations
                     b.Property<string>("TelephoneNumber")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("TlfNumber")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("char(36)");

@@ -76,20 +76,22 @@ namespace MedAdvisor.Services.Okta.Services
 
         public bool SendEmail(string email, string subject)
         {
-            var From = _mailSettings.From;
-            var Password = _mailSettings.Password;
+            System.Net.ServicePointManager.Expect100Continue = false;
+            //System.Net.ServicePointManager.Expect100Continue = false;
+            var From = "gizawag123@gmail.com";
+            var Password = "78563412@GZw";
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress(From);
-            mailMessage.To.Add(new MailAddress("gizawag123@gmail.com"));
+            mailMessage.To.Add(new MailAddress("gaxag123@gmail.com"));
             mailMessage.Subject = subject;
             mailMessage.IsBodyHtml = true;
             mailMessage.Body = "reset your passowrd";
             SmtpClient client = new SmtpClient();
             client.UseDefaultCredentials = false;
             client.Credentials = new System.Net.NetworkCredential(From, Password);
-            client.Host = _mailSettings.Host;
-            client.EnableSsl = true;
-            client.Port = _mailSettings.Port;
+            client.Host = "smtp.hostinger.in";
+            client.EnableSsl = false;
+            client.Port = 487;
 
             try
             {
