@@ -102,7 +102,7 @@ public class AuthController : ControllerBase
         {
          return BadRequest(new Models.ErrorModel("Invalid Google Token!", "GoogleSignIn"));
         }
-        var user_exist = await _userService.GetUserByEmail(payload.Email);
+        var user_exist = await _userService.FetchUserData(payload.Email);
         if (user_exist == null)
         {
             var new_user = new User()
